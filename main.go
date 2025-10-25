@@ -5,15 +5,30 @@ import (
 	"math"
 )
 
+const IMTPower = 2
+
 func main() {
-	const IMTPower = 2
-	var UserHeigth float64
-	var UserWeight float64
 	fmt.Println("__Калькулятор индекса массы тела__")
-	fmt.Println("Введите ваш рост в метрах")
-	fmt.Scan(&UserHeigth)
+	IMT := calculateIMT(getUserInput())
+	outputResult(IMT)
+}
+
+func outputResult(imt float64) {
+	result := fmt.Sprintf("Ваш индекс массы тела: %.0f", imt)
+	fmt.Println(result)
+}
+
+func calculateIMT(userWeigth, userHeigth float64) float64 {
+	IMT := userWeigth / math.Pow(userHeigth/100, IMTPower)
+	return IMT
+}
+
+func getUserInput() (float64, float64) {
+	var userHeigth float64
+	var userWeight float64
+	fmt.Println("Введите ваш рост в сантиметрах")
+	fmt.Scan(&userHeigth)
 	fmt.Println("Введите ваш вес")
-	fmt.Scan(&UserWeight)
-	IMT := UserWeight / math.Pow(UserHeigth, IMTPower)
-	fmt.Printf("Ваш индекс массы тела: %v", math.Round(IMT))
+	fmt.Scan(&userWeight)
+	return userHeigth, userWeight
 }
