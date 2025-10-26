@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math"
 )
@@ -8,11 +9,19 @@ import (
 const IMTPower = 2
 
 func main() {
-
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Println("Recover ", r)
+		}
+	}()
+	fmt.Println("__Калькулятор индекса массы тела__")
 	for {
-		fmt.Println("__Калькулятор индекса массы тела__")
 		userWeight, userHeight := getUserInput()
-		IMT := calculateIMT(userWeight, userHeight)
+		IMT, err := calculateIMT(userWeight, userHeight)
+		if err != nil {
+			panic("Не заданы параметры для расчета")
+		}
 		outputResult(IMT)
 		isRepeatCalculation := checkPereatCalculation()
 		if !isRepeatCalculation {
@@ -38,9 +47,12 @@ func outputResult(imt float64) {
 	}
 }
 
-func calculateIMT(userWeigth, userHeigth float64) float64 {
+func calculateIMT(userWeigth, userHeigth float64) (float64, error) {
+	if userWeigth <= 0 || userHeigth <= 0 {
+		return 0, errors.New("NO_PARAMS_ERROR")
+	}
 	IMT := userHeigth / math.Pow(userWeigth/100, IMTPower)
-	return IMT
+	return IMT, nil
 }
 
 func getUserInput() (float64, float64) {
